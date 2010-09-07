@@ -1,3 +1,5 @@
+Version 3.3.8.patch (2010-09-07)
+	
 Version 3.3.8 (2010-06-30)
 	Fixed bug where WebKit would not move the caret to a correct position after a paste operation.
 	Fixed bug where WebKit would produce a div wrapper element when pasting some contents.

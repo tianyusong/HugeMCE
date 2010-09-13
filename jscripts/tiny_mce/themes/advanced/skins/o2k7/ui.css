@@ -7,6 +7,7 @@
 .o2k7Skin table {background:#E5EFFD}
 .o2k7Skin iframe {display:block; background:#FFF}
 .o2k7Skin .mceToolbar {height:26px}
+.o2k7Skin .mceToolbar li {float:left; list-style-type:none}
 
 /* External */
 .o2k7Skin .mceExternalToolbar {position:absolute; border:1px solid #ABC6DD; border-bottom:0; display:none}

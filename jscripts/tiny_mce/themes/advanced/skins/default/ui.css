@@ -7,6 +7,7 @@
 .defaultSkin table {direction:ltr; background:#F0F0EE}
 .defaultSkin iframe {display:block; background:#FFF}
 .defaultSkin .mceToolbar {height:26px}
+.defaultSkin .mceToolbar li {float:left; list-style-type:none}
 .defaultSkin .mceLeft {text-align:left}
 .defaultSkin .mceRight {text-align:right}
 

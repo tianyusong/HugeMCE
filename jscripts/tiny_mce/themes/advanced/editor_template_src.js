@@ -482,7 +482,7 @@
 					break;
 
 				case "customlayout":
-					ic = ed.execCallback("theme_advanced_custom_layout", s, tb, o, p);
+					ic = ed.execCallback("theme_advanced_custom_layout", t, s, tb, o, p);
 					break;
 
 				default:

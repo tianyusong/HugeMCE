@@ -731,7 +731,7 @@
 					v = s['theme_advanced_container_' + c + '_toolbar_' + d] || '';
 					a = s['theme_advanced_container_' + c + '_toolbar_' + d + '_align'] || 'left';
 					
-					to = cf.createDivToolbar("toolbar" + (++i));
+					to = cf.createToolbar("toolbar" + (++i));
 					if (a == 'left') {
 						to.settings.style = 'float: left';
 					} else {

@@ -6,60 +6,12 @@
 <!-- TinyMCE -->
 <script type="text/javascript" src="../jscripts/tiny_mce/tiny_mce_src.js"></script>
 <script type="text/javascript">
-	function createToolbars(t, s, tb, o) {
-		var ed = t.editor, dc, da, cf = ed.controlManager, n, v, a, to, i = 0;
-
-		dc = s.theme_advanced_containers_default_class || '';
-		da = s.theme_advanced_containers_default_align || 'center';		
-
-		tinymce.each(tinymce.explode(s['theme_advanced_containers'] || ''), function(c) {
-			var html = '';
-
-			tinymce.each(tinymce.explode(s['theme_advanced_container_' + c + '_toolbars'] || ''), function(d) {
-				v = s['theme_advanced_container_' + c + '_toolbar_' + d] || '';
-				a = s['theme_advanced_container_' + c + '_toolbar_' + d + '_align'] || 'left';
-				
-				to = cf.createDivToolbar("toolbar" + (++i));
-				if (a == 'left') {
-					to.settings.style = 'float: left';
-				} else {
-					to.settings.style = 'float: right';
-				}
-				t._addControls(v, to);
-				html += to.renderHTML();
-			});
-
-			n = tinymce.DOM.add(tinymce.DOM.add(tb, 'tr'), 'td', {
-				'class' : 'mceToolbar ' + (s['theme_advanced_container_' + c + '_class'] || dc) + ' ' + (s['theme_advanced_container_' + c + '_align'] || da)
-			});
-			tinymce.DOM.setHTML(n, html);
-			o.deltaHeight -= s.theme_advanced_row_height;
-		});
-	}
-	
-	function drawEditor(t, s, tb, o, p) {
-		var n, ic;
-		
-		// create the tool bar
-		createToolbars(t, s, tb, o);
-
-		// create ifram container
-		n = tinymce.DOM.add(tb, 'tr');	
-		n = ic = tinymce.DOM.add(n, 'td', {'class' : 'mceIframeContainer'});
-		
-		// create status bar
-		t._addStatusBar(tb, o);
-		
-		return ic;
-	}
-	
 	tinyMCE.init({
 		// General options
 		mode : "textareas",
 		theme : "advanced",
 		plugins : "pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave",
-		theme_advanced_custom_layout : "drawEditor",
-		theme_advanced_layout_manager : "CustomLayout",
+		theme_advanced_layout_manager : "CustomRowLayout",
 		theme_advanced_containers : 'con1,con2,con3',
 		theme_advanced_container_con1_toolbars : 'toobar1,toobar2',
 		theme_advanced_container_con1_toolbar_toobar1_align : 'left',

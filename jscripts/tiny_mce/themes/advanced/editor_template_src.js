@@ -481,8 +481,12 @@
 					ic = t._rowLayout(s, tb, o);
 					break;
 
+				case "customrowlayout":
+					ic = t._customRowLayout(s, tb, o);
+					break;
+
 				case "customlayout":
-					ic = ed.execCallback("theme_advanced_custom_layout", t, s, tb, o, p);
+					ic = ed.execCallback("theme_advanced_custom_layout", s, tb, o, p);
 					break;
 
 				default:
@@ -710,6 +714,47 @@
 				}
 			});
 
+			return ic;
+		},
+
+		_customRowLayout : function(s, tb, o) {
+			var t = this, ic, ed = t.editor, dc, da, cf = ed.controlManager, n, v, a, to, i = 0;
+	
+			// create the tool bar
+			dc = s.theme_advanced_containers_default_class || '';
+			da = s.theme_advanced_containers_default_align || 'center';		
+	
+			each(explode(s['theme_advanced_containers'] || ''), function(c) {
+				var html = '';
+	
+				each(explode(s['theme_advanced_container_' + c + '_toolbars'] || ''), function(d) {
+					v = s['theme_advanced_container_' + c + '_toolbar_' + d] || '';
+					a = s['theme_advanced_container_' + c + '_toolbar_' + d + '_align'] || 'left';
+					
+					to = cf.createDivToolbar("toolbar" + (++i));
+					if (a == 'left') {
+						to.settings.style = 'float: left';
+					} else {
+						to.settings.style = 'float: right';
+					}
+					t._addControls(v, to);
+					html += to.renderHTML();
+				});
+	
+				n = DOM.add(DOM.add(tb, 'tr'), 'td', {
+					'class' : 'mceToolbar ' + (s['theme_advanced_container_' + c + '_class'] || dc) + ' ' + (s['theme_advanced_container_' + c + '_align'] || da)
+				});
+				DOM.setHTML(n, html);
+				o.deltaHeight -= s.theme_advanced_row_height;
+			});
+
+			// create ifram container
+			n = DOM.add(tb, 'tr');	
+			n = ic = DOM.add(n, 'td', {'class' : 'mceIframeContainer'});
+			
+			// create status bar
+			t._addStatusBar(tb, o);
+			
 			return ic;
 		},
 

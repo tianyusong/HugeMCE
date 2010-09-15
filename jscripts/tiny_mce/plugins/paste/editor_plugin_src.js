@@ -77,6 +77,7 @@
 				t.onPreProcess.dispatch(t, o);
 
 				// Create DOM structure
+        // HugeMCE: tinymce创建一个html的元素.
 				o.node = dom.create('div', 0, o.content);
 
 				// Execute post process handlers
@@ -337,7 +338,7 @@
 					]);
 				}
 
-// ---------------------- HugeMCE: 过滤掉了office和word的标签.
+        // HugeMCE: 过滤掉了office和word的标签.
 				process([
 					// Word comments like conditional comments etc
 					/<!--[\s\S]+?-->/gi,
@@ -351,7 +352,9 @@
 					// Replace nsbp entites to char since it's easier to handle
 					[/&nbsp;/gi, "\u00a0"]
 				]);
- // ---------------------
+ 
+        // HugeMCE: 过滤掉负数的margin属性.
+        process([/margin[\-befghilmoprt]*\s*:\s*-[\d\.]+[emptx]*;/gi]);
 
 				// Remove bad attributes, with or without quotes, ensuring that attribute text is really inside a tag.
 				// If JavaScript had a RegExp look-behind, we could have integrated this with the last process() array and got rid of the loop. But alas, it does not, so we cannot.

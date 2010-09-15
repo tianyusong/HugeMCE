@@ -485,6 +485,10 @@
 					ic = t._customRowLayout(s, tb, o);
 					break;
 
+				case "o2k7layout":
+					ic = t._o2k7Layout(s, tb, o);
+					break;
+
 				case "customlayout":
 					ic = ed.execCallback("theme_advanced_custom_layout", s, tb, o, p);
 					break;
@@ -758,7 +762,43 @@
 			return ic;
 		},
 
-		_addControls : function(v, tb) {
+		_o2k7Layout : function(s, tb, o) {
+			var t = this, ic, ed = t.editor, cf = ed.controlManager, n, v, to, i = 0;
+	
+			// create the tool bar
+			var html = '';
+			
+			each(explode(s['theme_advanced_containers'] || ''), function(c) {
+				to = cf.createO2k7Toolbar("toolbar" + (++i));
+				to.description = s['theme_advanced_container_' + c + '_description'] || ''
+				to.settings.style = 'float: left; border-style:solid; border-right-width:1px;';
+	
+				var r = 0;
+				each(explode(s['theme_advanced_container_' + c + '_toolbars'] || ''), function(d) {
+					v = s['theme_advanced_container_' + c + '_toolbar_' + d] || '';
+					t._addControls(v, to, r++);
+				});
+				
+				html += to.renderHTML();
+			});
+	
+			n = DOM.add(DOM.add(tb, 'tr'), 'td', {
+				'class' : 'mceToolbar'
+			});
+			DOM.setHTML(n, html);
+			o.deltaHeight -= s.theme_advanced_row_height;
+
+			// create ifram container
+			n = DOM.add(tb, 'tr');	
+			n = ic = DOM.add(n, 'td', {'class' : 'mceIframeContainer'});
+			
+			// create status bar
+			t._addStatusBar(tb, o);
+			
+			return ic;
+		},
+
+		_addControls : function(v, tb, i) {
 			var t = this, s = t.settings, di, cf = t.editor.controlManager;
 
 			if (s.theme_advanced_disable && !t._disabled) {
@@ -783,8 +823,13 @@
 					each(["table","|","row_props","cell_props","|","row_before","row_after","delete_row","|","col_before","col_after","delete_col","|","split_cells","merge_cells"], function(n) {
 						n = t.createControl(n, cf);
 
-						if (n)
-							tb.add(n);
+						if (n) {
+							if (i != undefined) {
+								tb.add(i, n);
+							} else {
+								tb.add(n);
+							}
+						}
 					});
 
 					return;
@@ -792,8 +837,13 @@
 
 				c = t.createControl(n, cf);
 
-				if (c)
-					tb.add(c);
+				if (c) {
+					if (i != undefined) {
+						tb.add(i, c);
+					} else {
+						tb.add(c);
+					}
+				}
 			});
 		},
 

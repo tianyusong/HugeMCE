@@ -352,7 +352,7 @@
 					// Replace nsbp entites to char since it's easier to handle
 					[/&nbsp;/gi, "\u00a0"]
 				]);
- 
+
         // HugeMCE: 过滤掉负数的margin属性.
         process([/margin[\-befghilmoprt]*\s*:\s*-[\d\.]+[emptx]*;/gi]);
 
@@ -365,7 +365,7 @@
 
 				// Remove all spans if no styles is to be retained
         // 是否过滤span标签.
-				if (getParam(ed, "paste_retain_style_properties").replace(/^none$/i, "").length != 0) {
+				if (getParam(ed, "paste_retain_style_properties").replace(/^none$/i, "").length == 0) {
 					h = h.replace(/<\/?span[^>]*>/gi, "");
 				} else {
 					// We're keeping styles, so at least clean them up.

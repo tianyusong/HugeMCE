@@ -39,5 +39,12 @@ align_texttop:"Text top",
 align_textbottom:"Text bottom",
 align_left:"Left",
 align_right:"Right",
-image_list:"Image list"
+image_list:"Image list",
+
+upload_file : 'Upload',
+available_file_desc : 'only jpg, bmp, png are available',
+no_file : "PLEASE CHOOSE ONE FILE FIRST",
+choose_file : "Choose Local File",
+operation : "Available Operations",
+operation_upload : "Upload"
 });

@@ -1,4 +1,14 @@
 var ImageDialog = {
+	upload : function() {
+		alert("uploading....");
+		mcTabs.displayTab('general_tab','general_panel');
+		var obj = document.getElementById("src");
+		obj.value = "http://www.baidu.com/img/logo-yy.gif";
+		setTimeout(function(){
+			obj.fireEvent('onchange');
+		}, 1000);
+	},
+
 	preInit : function() {
 		var url;
 

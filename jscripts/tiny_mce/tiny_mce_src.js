@@ -1220,14 +1220,12 @@ tinymce.create('static tinymce.util.XHR', {
 
 				e = is(n, 'string') ? t.doc.createElement(n) : n;
 				t.setAttribs(e, a);
-
 				if (h) {
 					if (h.nodeType)
 						e.appendChild(h);
 					else
 						t.setHTML(e, h);
 				}
-
 				return !c ? p.appendChild(e) : e;
 			});
 		},
@@ -1605,7 +1603,7 @@ tinymce.create('static tinymce.util.XHR', {
 
 			if (!st)
 				return o;
-
+// HugeMCE: css过滤.
 			function compress(p, s, ot) {
 				var t, r, b, l;
 
@@ -1688,7 +1686,8 @@ tinymce.create('static tinymce.util.XHR', {
 			compress("border", "-style", "border-style");
 			compress("padding", "", "padding");
 			compress("margin", "", "margin");
-			compress2('border', 'border-width', 'border-style', 'border-color');
+      // HugeMCE: 删除一个样式合并(此合并会导致样式的逻辑问题).
+			// compress2('border', 'border-width', 'border-style', 'border-color');
 
 			if (isIE) {
 				// Remove pointless border
@@ -1842,15 +1841,13 @@ tinymce.create('static tinymce.util.XHR', {
 		uniqueId : function(p) {
 			return (!p ? 'mce_' : p) + (this.counter++);
 		},
-
+// HugeMCE: 这里是设置html的地方.
 		setHTML : function(e, h) {
 			var t = this;
 
 			return this.run(e, function(e) {
 				var x, i, nl, n, p, x;
-
 				h = t.processHTML(h);
-
 				if (isIE) {
 					function set() {
 						// Remove all child nodes
@@ -6249,9 +6246,9 @@ window.tinymce.dom.Sizzle = Sizzle;
 			return null;
 		},
 
+// modify: sunjx
 		serialize : function(n, o) {
 			var h, t = this, doc, oldDoc, impl, selected;
-
 			t._setup();
 			o = o || {};
 			o.format = o.format || 'html';
@@ -6324,7 +6321,6 @@ window.tinymce.dom.Sizzle = Sizzle;
 
 			if (!o.no_events)
 				t.onPostProcess.dispatch(t, o);
-
 			t._postProcess(o);
 			o.node = null;
 

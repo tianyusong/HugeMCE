@@ -8822,7 +8822,7 @@ tinymce.create('tinymce.ui.O2k7Toolbar:tinymce.ui.MultiLineContainer', {
 			h += '</ul></td></tr>';
 		}
 		
-		h += '<tr><td style="text-align: center">' + t.description + '</td></tr>';
+		h += '<tr><td style="text-align: center"><span class="groupTitle">' + t.description + '</span></td></tr>';
 
 		return dom.createHTML('table', {id : t.id, 'class' : 'mceToolbar' + (s['class'] ? ' ' + s['class'] : ''), 'style' : (s['style'] ? s['style'] : ''), cellpadding : '0', cellspacing : '0', align : t.settings.align || ''}, '<tbody>' + h + '</tbody>');
 	}

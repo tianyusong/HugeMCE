@@ -8,6 +8,7 @@
 .defaultSkin iframe {display:block; background:#FFF}
 .defaultSkin .mceToolbar {height:26px}
 .defaultSkin .mceToolbar li {float:left; list-style-type:none}
+.defaultSkin .mceToolbar .groupTitle {text-align:center; color:#5b626c; white-space:nowrap; padding:0px 6px 0px 3px; font-size: 8pt;}
 .defaultSkin .mceLeft {text-align:left}
 .defaultSkin .mceRight {text-align:right}
 

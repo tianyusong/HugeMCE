@@ -273,7 +273,7 @@
 							}
 						};
 					}
-				},
+				}
 			], function(setup) {
 				// Try executing each function to find a suitable storage engine
 				try {

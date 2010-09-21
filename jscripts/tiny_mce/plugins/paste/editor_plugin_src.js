@@ -14,11 +14,13 @@
 		defs = {
 			paste_auto_cleanup_on_paste : true,
 			paste_block_drop : false,
-			paste_retain_style_properties : "none",
+      // HugeMCE: 这个属性有3个值'none'为不保留原始样式, '*'和'all'会保留word复制过来的内容的样式.
+			paste_retain_style_properties : "*",
 			paste_strip_class_attributes : "mso",
 			paste_remove_spans : false,
 			paste_remove_styles : false,
-			paste_remove_styles_if_webkit : true,
+      // HugeMCE: chrome的样式处理.
+			paste_remove_styles_if_webkit : false,
 			paste_convert_middot_lists : true,
 			paste_convert_headers_to_strong : false,
 			paste_dialog_width : "450",
@@ -75,9 +77,11 @@
 				t.onPreProcess.dispatch(t, o);
 
 				// Create DOM structure
+        // HugeMCE: tinymce创建一个html的元素.
 				o.node = dom.create('div', 0, o.content);
 
 				// Execute post process handlers
+        // HugeMCE: 这里把内容做了过滤.
 				t.onPostProcess.dispatch(t, o);
 
 				// Serialize content
@@ -168,7 +172,6 @@
 					rng = dom.doc.body.createTextRange();
 					rng.moveToElementText(n);
 					rng.execCommand('Paste');
-
 					// Remove container
 					dom.remove(n);
 
@@ -244,7 +247,6 @@
 							sel.setRng(or);
 
 						process({content : h});
-
 						// Unblock events ones we got the contents
 						dom.unbind(ed.getDoc(), 'mousedown', block);
 						dom.unbind(ed.getDoc(), 'keydown', block);
@@ -336,6 +338,7 @@
 					]);
 				}
 
+        // HugeMCE: 过滤掉了office和word的标签.
 				process([
 					// Word comments like conditional comments etc
 					/<!--[\s\S]+?-->/gi,
@@ -350,6 +353,9 @@
 					[/&nbsp;/gi, "\u00a0"]
 				]);
 
+        // HugeMCE: 过滤掉负数的margin属性.
+        process([/margin[\-befghilmoprt]*\s*:\s*-[\d\.]+[emptx]*;/gi]);
+
 				// Remove bad attributes, with or without quotes, ensuring that attribute text is really inside a tag.
 				// If JavaScript had a RegExp look-behind, we could have integrated this with the last process() array and got rid of the loop. But alas, it does not, so we cannot.
 				do {
@@ -358,12 +364,13 @@
 				} while (len != h.length);
 
 				// Remove all spans if no styles is to be retained
+        // 是否过滤span标签.
 				if (getParam(ed, "paste_retain_style_properties").replace(/^none$/i, "").length == 0) {
 					h = h.replace(/<\/?span[^>]*>/gi, "");
 				} else {
 					// We're keeping styles, so at least clean them up.
 					// CSS Reference: http://msdn.microsoft.com/en-us/library/aa155477.aspx
-
+          h = h.replace(/windowtext/gi, "#000");
 					process([
 						// Convert <span style="mso-spacerun:yes">___</span> to string of alternating breaking/non-breaking spaces of same length
 						[/<span\s+style\s*=\s*"\s*mso-spacerun\s*:\s*yes\s*;?\s*"\s*>([\s\u00a0]*)<\/span>/gi,
@@ -512,16 +519,15 @@
 			}
 
 			//console.log('After preprocess:' + h);
-
 			o.content = h;
 		},
 
 		/**
 		 * Various post process items.
+     * HugeMCE: 这里过滤掉了很多属性.
 		 */
 		_postProcess : function(pl, o) {
 			var t = this, ed = t.editor, dom = ed.dom, styleProps;
-
 			if (o.wordContent) {
 				// Remove named anchors or TOC links
 				each(dom.select('a', o.node), function(a) {
@@ -541,6 +547,7 @@
 					styleProps = tinymce.explode(styleProps.replace(/^none$/i, ""));
 
 					// Retains some style properties
+          // HugeMCE: 循环过滤.
 					each(dom.select('*', o.node), function(el) {
 						var newStyle = {}, npc = 0, i, sp, sv;
 
@@ -660,7 +667,6 @@
 				} else
 					listElm = lastMargin = 0; // End list element
 			});
-
 			// Remove any left over makers
 			html = o.node.innerHTML;
 			if (html.indexOf('__MCE_ITEM__') != -1)

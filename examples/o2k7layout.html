@@ -6,74 +6,37 @@
 <!-- TinyMCE -->
 <script type="text/javascript" src="../jscripts/tiny_mce/tiny_mce_src.js"></script>
 <script type="text/javascript">
-	function createToolbars(t, s, tb, o) {
-		var ed = t.editor, dc, da, cf = ed.controlManager, n, v, a, to, i = 0;
-
-		dc = s.theme_advanced_containers_default_class || '';
-		da = s.theme_advanced_containers_default_align || 'center';		
-
-		tinymce.each(tinymce.explode(s['theme_advanced_containers'] || ''), function(c) {
-			var html = '';
-
-			tinymce.each(tinymce.explode(s['theme_advanced_container_' + c + '_toolbars'] || ''), function(d) {
-				v = s['theme_advanced_container_' + c + '_toolbar_' + d] || '';
-				a = s['theme_advanced_container_' + c + '_toolbar_' + d + '_align'] || 'left';
-				
-				to = cf.createDivToolbar("toolbar" + (++i));
-				if (a == 'left') {
-					to.settings.style = 'float: left';
-				} else {
-					to.settings.style = 'float: right';
-				}
-				t._addControls(v, to);
-				html += to.renderHTML();
-			});
-
-			n = tinymce.DOM.add(tinymce.DOM.add(tb, 'tr'), 'td', {
-				'class' : 'mceToolbar ' + (s['theme_advanced_container_' + c + '_class'] || dc) + ' ' + (s['theme_advanced_container_' + c + '_align'] || da)
-			});
-			tinymce.DOM.setHTML(n, html);
-			o.deltaHeight -= s.theme_advanced_row_height;
-		});
-	}
-	
-	function drawEditor(t, s, tb, o, p) {
-		var n, ic;
-		
-		// create the tool bar
-		createToolbars(t, s, tb, o);
-
-		// create ifram container
-		n = tinymce.DOM.add(tb, 'tr');	
-		n = ic = tinymce.DOM.add(n, 'td', {'class' : 'mceIframeContainer'});
-		
-		// create status bar
-		t._addStatusBar(tb, o);
-		
-		return ic;
-	}
-	
 	tinyMCE.init({
 		// General options
 		mode : "textareas",
 		theme : "advanced",
 		plugins : "pagebreak,style,layer,table,save,advhr,advimage,advlink,emotions,iespell,inlinepopups,insertdatetime,preview,media,searchreplace,print,contextmenu,paste,directionality,fullscreen,noneditable,visualchars,nonbreaking,xhtmlxtras,template,wordcount,advlist,autosave",
-		theme_advanced_custom_layout : "drawEditor",
-		theme_advanced_layout_manager : "CustomLayout",
-		theme_advanced_containers : 'con1,con2,con3',
+		theme_advanced_layout_manager : "o2k7Layout",
+		theme_advanced_containers : 'con1,con2,con3,con4,con5,con6',
+		theme_advanced_container_con1_description : 'ºÙÃ˘∞Â',
 		theme_advanced_container_con1_toolbars : 'toobar1,toobar2',
-		theme_advanced_container_con1_toolbar_toobar1_align : 'left',
-		theme_advanced_container_con1_toolbar_toobar1 : 'cut,copy,paste,pastetext,pasteword,separator,undo,redo,separator,search,replace,selectall,separator,removeformat',
-		theme_advanced_container_con1_toolbar_toobar2_align : 'right',
-		theme_advanced_container_con1_toolbar_toobar2 : 'iespell,code,preview,print,fullscreen',
+		theme_advanced_container_con1_toolbar_toobar1 : 'cut,copy,paste',
+		theme_advanced_container_con1_toolbar_toobar2 : 'pastetext,pasteword',
+		theme_advanced_container_con2_description : '◊÷ÃÂ',
 		theme_advanced_container_con2_toolbars : 'toobar1,toobar2',
-		theme_advanced_container_con2_toolbar_toobar1_align : 'left',
-		theme_advanced_container_con2_toolbar_toobar1 : 'bold,italic,underline,strikethrough,separator,numlist,bullist,separator,outdent,indent,separator,justifyleft,justifycenter,justifyright,justifyfull,separator,link,unlink,anchor',
-		theme_advanced_container_con2_toolbar_toobar2_align : 'right',
-		theme_advanced_container_con2_toolbar_toobar2 : 'image,table,hr,advhr,charmap,emotions,media',
-		theme_advanced_container_con3_toolbars : 'toobar1',
-		theme_advanced_container_con3_toolbar_toobar1_align : 'left',
-		theme_advanced_container_con3_toolbar_toobar1 : 'styleselect,formatselect,fontselect,fontsizeselect,separator,forecolor,backcolor'
+		theme_advanced_container_con2_toolbar_toobar1 : 'styleselect,formatselect,fontselect,fontsizeselect',
+		theme_advanced_container_con2_toolbar_toobar2 : 'bold,italic,underline,strikethrough,sub,sup,forecolor,backcolor,removeformat',
+		theme_advanced_container_con3_description : '∂Œ¬‰',
+		theme_advanced_container_con3_toolbars : 'toobar1,toobar2',
+		theme_advanced_container_con3_toolbar_toobar1 : 'numlist,bullist,outdent,indent',
+		theme_advanced_container_con3_toolbar_toobar2 : 'justifyleft,justifycenter,justifyright,justifyfull',
+		theme_advanced_container_con4_description : '±Ì∏Ò',
+		theme_advanced_container_con4_toolbars : 'toobar1,toobar2',
+		theme_advanced_container_con4_toolbar_toobar1 : 'row_before,row_after,delete_row,col_before,col_after,delete_col',
+		theme_advanced_container_con4_toolbar_toobar2 : 'table,row_props,cell_props,split_cells,merge_cells',
+		theme_advanced_container_con5_description : '≤Â»Î',
+		theme_advanced_container_con5_toolbars : 'toobar1,toobar2',
+		theme_advanced_container_con5_toolbar_toobar1 : 'advhr,charmap,emotions,image,media',
+		theme_advanced_container_con5_toolbar_toobar2 : 'hr,link,unlink,anchor',
+		theme_advanced_container_con6_description : ' ”Õº',
+		theme_advanced_container_con6_toolbars : 'toobar1,toobar2',
+		theme_advanced_container_con6_toolbar_toobar1 : 'undo,redo,search,replace,selectall',
+		theme_advanced_container_con6_toolbar_toobar2 : 'iespell,code,preview,print,fullscreen'
 	});
 </script>
 <!-- /TinyMCE -->

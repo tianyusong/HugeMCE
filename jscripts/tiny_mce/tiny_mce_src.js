@@ -1220,14 +1220,12 @@ tinymce.create('static tinymce.util.XHR', {
 
 				e = is(n, 'string') ? t.doc.createElement(n) : n;
 				t.setAttribs(e, a);
-
 				if (h) {
 					if (h.nodeType)
 						e.appendChild(h);
 					else
 						t.setHTML(e, h);
 				}
-
 				return !c ? p.appendChild(e) : e;
 			});
 		},
@@ -1605,7 +1603,7 @@ tinymce.create('static tinymce.util.XHR', {
 
 			if (!st)
 				return o;
-
+// HugeMCE: css过滤.
 			function compress(p, s, ot) {
 				var t, r, b, l;
 
@@ -1688,7 +1686,8 @@ tinymce.create('static tinymce.util.XHR', {
 			compress("border", "-style", "border-style");
 			compress("padding", "", "padding");
 			compress("margin", "", "margin");
-			compress2('border', 'border-width', 'border-style', 'border-color');
+      // HugeMCE: 删除一个样式合并(此合并会导致样式的逻辑问题).
+			// compress2('border', 'border-width', 'border-style', 'border-color');
 
 			if (isIE) {
 				// Remove pointless border
@@ -1842,15 +1841,13 @@ tinymce.create('static tinymce.util.XHR', {
 		uniqueId : function(p) {
 			return (!p ? 'mce_' : p) + (this.counter++);
 		},
-
+// HugeMCE: 这里是设置html的地方.
 		setHTML : function(e, h) {
 			var t = this;
 
 			return this.run(e, function(e) {
 				var x, i, nl, n, p, x;
-
 				h = t.processHTML(h);
-
 				if (isIE) {
 					function set() {
 						// Remove all child nodes
@@ -6249,9 +6246,9 @@ window.tinymce.dom.Sizzle = Sizzle;
 			return null;
 		},
 
+// modify: sunjx
 		serialize : function(n, o) {
 			var h, t = this, doc, oldDoc, impl, selected;
-
 			t._setup();
 			o = o || {};
 			o.format = o.format || 'html';
@@ -6324,7 +6321,6 @@ window.tinymce.dom.Sizzle = Sizzle;
 
 			if (!o.no_events)
 				t.onPostProcess.dispatch(t, o);
-
 			t._postProcess(o);
 			o.node = null;
 
@@ -7421,6 +7417,7 @@ tinymce.dom.TreeWalker = function(start_node, root_node) {
 		}
 	});
 })(tinymce);
+
 tinymce.create('tinymce.ui.Container:tinymce.ui.Control', {
 	Container : function(id, s) {
 		this.parent(id, s);
@@ -7433,6 +7430,32 @@ tinymce.create('tinymce.ui.Container:tinymce.ui.Control', {
 	add : function(c) {
 		this.lookup[c.id] = c;
 		this.controls.push(c);
+
+		return c;
+	},
+
+	get : function(n) {
+		return this.lookup[n];
+	}
+});
+
+tinymce.create('tinymce.ui.MultiLineContainer:tinymce.ui.Control', {
+	MultiLineContainer : function(id, s) {
+		this.parent(id, s);
+
+		this.controls = [];
+
+		this.lookup = {};
+	},
+
+	add : function(i, c) {
+		this.lookup[c.id] = c;
+		if (this.controls.length <= i) {
+				for (var index = this.controls.length; index <= i; index++) {
+						this.controls.push([]);
+				}
+		}
+		this.controls[i].push(c);
 
 		return c;
 	},
@@ -8725,70 +8748,83 @@ tinymce.create('tinymce.ui.Toolbar:tinymce.ui.Container', {
 
 		h += dom.createHTML('td', {'class' : c}, dom.createHTML('span', null, '<!-- IE -->'));
 
-		return dom.createHTML('table', {id : t.id, 'class' : 'mceToolbar' + (s['class'] ? ' ' + s['class'] : ''), cellpadding : '0', cellspacing : '0', align : t.settings.align || ''}, '<tbody><tr>' + h + '</tr></tbody>');
+		return dom.createHTML('table', {id : t.id, 'class' : 'mceToolbar' + (s['class'] ? ' ' + s['class'] : ''), 'style' : (s['style'] ? s['style'] : ''), cellpadding : '0', cellspacing : '0', align : t.settings.align || ''}, '<tbody><tr>' + h + '</tr></tbody>');
 	}
 });
 
-tinymce.create('tinymce.ui.DivToolbar:tinymce.ui.Container', {
+tinymce.create('tinymce.ui.O2k7Toolbar:tinymce.ui.MultiLineContainer', {
+	description : '',
 	renderHTML : function() {
-		var t = this, h = '', c, co, dom = tinymce.DOM, s = t.settings, i, pr, nx, cl;
+		var t = this, h = '', c, co, dom = tinymce.DOM, s = t.settings, r, i, pr, nx, clr, cl;
 
-		cl = t.controls;
-		for (i=0; i<cl.length; i++) {
-			// Get current control, prev control, next control and if the control is a list box or not
-			co = cl[i];
-			pr = cl[i - 1];
-			nx = cl[i + 1];
+		clr = t.controls;
+		
+		for (r=0; r<clr.length; r++) {
+			cl = clr[r];
 
-			// Add toolbar start
-			if (i === 0) {
-				c = 'mceToolbarStart';
-
-				if (co.Button)
-					c += ' mceToolbarStartButton';
-				else if (co.SplitButton)
-					c += ' mceToolbarStartSplitButton';
-				else if (co.ListBox)
-					c += ' mceToolbarStartListBox';
-
-				h += dom.createHTML('li', {'class' : c}, dom.createHTML('span', null, '<!-- IE -->'));
+			h += '<tr><td><ul>';			
+			for (i=0; i<cl.length; i++) {
+				// Get current control, prev control, next control and if the control is a list box or not
+				co = cl[i];
+				pr = cl[i - 1];
+				nx = cl[i + 1];
+	
+				// Add toolbar start
+				if (i === 0) {
+					c = 'mceToolbarStart';
+	
+					if (co.Button)
+						c += ' mceToolbarStartButton';
+					else if (co.SplitButton)
+						c += ' mceToolbarStartSplitButton';
+					else if (co.ListBox)
+						c += ' mceToolbarStartListBox';
+	
+					h += dom.createHTML('li', {'class' : c}, dom.createHTML('span', null, '<!-- IE -->'));
+				}
+	
+				// Add toolbar end before list box and after the previous button
+				// This is to fix the o2k7 editor skins
+				if (pr && co.ListBox) {
+					if (pr.Button || pr.SplitButton) {
+						h += dom.createHTML('li', {'class' : 'mceToolbarEnd'}, dom.createHTML('span', null, '<!-- IE -->'));
+					}
+				}
+	
+				// Render control HTML
+	
+				// IE 8 quick fix, needed to propertly generate a hit area for anchors
+				if (dom.stdMode)
+					h += '<li style="position: relative">' + co.renderHTML() + '</li>';
+				else
+					h += '<li>' + co.renderHTML() + '</li>';
+	
+				// Add toolbar start after list box and before the next button
+				// This is to fix the o2k7 editor skins
+				if (nx && co.ListBox) {
+					if (nx.Button || nx.SplitButton) {
+						h += dom.createHTML('li', {'class' : 'mceToolbarStart'}, dom.createHTML('span', null, '<!-- IE -->'));
+					}
+				}
 			}
-
-			// Add toolbar end before list box and after the previous button
-			// This is to fix the o2k7 editor skins
-			if (pr && co.ListBox) {
-				if (pr.Button || pr.SplitButton)
-					h += dom.createHTML('li', {'class' : 'mceToolbarEnd'}, dom.createHTML('span', null, '<!-- IE -->'));
-			}
-
-			// Render control HTML
-
-			// IE 8 quick fix, needed to propertly generate a hit area for anchors
-			if (dom.stdMode)
-				h += '<li style="position: relative">' + co.renderHTML() + '</li>';
-			else
-				h += '<li>' + co.renderHTML() + '</li>';
-
-			// Add toolbar start after list box and before the next button
-			// This is to fix the o2k7 editor skins
-			if (nx && co.ListBox) {
-				if (nx.Button || nx.SplitButton)
-					h += dom.createHTML('li', {'class' : 'mceToolbarStart'}, dom.createHTML('span', null, '<!-- IE -->'));
-			}
+	
+			c = 'mceToolbarEnd';
+	
+			if (co.Button)
+				c += ' mceToolbarEndButton';
+			else if (co.SplitButton)
+				c += ' mceToolbarEndSplitButton';
+			else if (co.ListBox)
+				c += ' mceToolbarEndListBox';
+	
+			h += dom.createHTML('li', {'class' : c}, dom.createHTML('span', null, '<!-- IE -->'));
+			
+			h += '</ul></td></tr>';
 		}
+		
+		h += '<tr><td style="text-align: center"><span class="groupTitle">' + t.description + '</span></td></tr>';
 
-		c = 'mceToolbarEnd';
-
-		if (co.Button)
-			c += ' mceToolbarEndButton';
-		else if (co.SplitButton)
-			c += ' mceToolbarEndSplitButton';
-		else if (co.ListBox)
-			c += ' mceToolbarEndListBox';
-
-		h += dom.createHTML('li', {'class' : c}, dom.createHTML('span', null, '<!-- IE -->'));
-
-		return dom.createHTML('div', {id : t.id, 'class' : 'mceToolbar' + (s['class'] ? ' ' + s['class'] : ''), 'style' : (s['style'] ? s['style'] : ''), cellpadding : '0', cellspacing : '0', align : t.settings.align || ''}, '<ul>' + h + '</ul>');
+		return dom.createHTML('table', {id : t.id, 'class' : 'mceToolbar' + (s['class'] ? ' ' + s['class'] : ''), 'style' : (s['style'] ? s['style'] : ''), cellpadding : '0', cellspacing : '0', align : t.settings.align || ''}, '<tbody>' + h + '</tbody>');
 	}
 });
 
@@ -12660,11 +12696,11 @@ tinymce.create('tinymce.ui.DivToolbar:tinymce.ui.Container', {
 			return t.add(c);
 		},
 
-		createDivToolbar : function(id, s, cc) {
+		createO2k7Toolbar : function(id, s, cc) {
 			var c, t = this, cls;
 
 			id = t.prefix + id;
-			cls = cc || t._cls.toolbar || tinymce.ui.DivToolbar;
+			cls = cc || t._cls.toolbar || tinymce.ui.O2k7Toolbar;
 			c = new cls(id, s);
 
 			if (t.get(id))

@@ -6,6 +6,8 @@
  *
  * License: http://tinymce.moxiecode.com/license
  * Contributing: http://tinymce.moxiecode.com/contributing
+ * 问题：当table,td设置了cursor为default或其他的，则cursor为格式刷将无效，即使设置了!important
+ *       
  */
 
 (function() {
@@ -43,17 +45,40 @@
 			
 			// 鼠标up的时候，使用格式刷的样式进行格式化被选择的内容
 			ed.onMouseUp.add(function(ed, e) {
-				var html = ed.selection.getContent();
-				if(html && t.tagnames.length > 0) {
-					for(var i = 0; i < t.tagnames.length; i++) {
-						var tagname = t.tagnames[i];
-						if (tagname == "div" || tagname == "p" || tagname == "table" || tagname == "ul") continue; 
-						html = "<"+tagname+(i==0?(" style='"+t.cssText+"'"):"")+">" + html + "</"+tagname+">";
+				try {
+					if (!root) return false;
+					var html = ed.selection.getContent();
+					if(html && t.tagnames.length > 0) {
+						var changed = false;
+						for(var i = 0; i < t.tagnames.length; i++) {
+							var tagname = t.tagnames[i];
+							// 忽略一些块状元素，否则格式化后的区域会换行之类的
+							if (tagname == "div" || tagname == "p" || tagname == "table") continue; 
+							html = "<"+tagname+(i==0?(" style='"+t.cssText+"'"):"")+">" + html + "</"+tagname+">";
+							changed = true;
+						}
+						// 如果没有改变，则原来有css变化，则创建一个默认的span元素，加上css,使其使用上格式
+						if (!changed && t.cssText) {
+							html = "<span style='" + t.cssText + "'>" + html + "</span>";
+						}
 					}
 					ed.selection.setContent(html);
 					t.tagnames = [];
 					t.cssText = "";
-					root.style.cursor = "auto";
+					root.style.cursor = "auto";	
+					root = null;
+				} catch (e) {
+				}
+			});
+
+			// 键盘事件，主要处理按下Esc键取消格式
+			ed.onKeyUp.add(function(ed, e) {
+				try {
+					if (e.keyCode == 27) {
+						root.style.cursor = "auto";
+						root = null
+					}
+				} catch (e) {
 				}
 			});
 

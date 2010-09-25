@@ -8822,7 +8822,7 @@ tinymce.create('tinymce.ui.O2k7Toolbar:tinymce.ui.MultiLineContainer', {
 			h += '</ul></td></tr>';
 		}
 		
-		h += '<tr><td style="text-align: center">' + t.description + '</td></tr>';
+		h += '<tr><td style="text-align: center"><span class="groupTitle">' + t.description + '</span></td></tr>';
 
 		return dom.createHTML('table', {id : t.id, 'class' : 'mceToolbar' + (s['class'] ? ' ' + s['class'] : ''), 'style' : (s['style'] ? s['style'] : ''), cellpadding : '0', cellspacing : '0', align : t.settings.align || ''}, '<tbody>' + h + '</tbody>');
 	}
@@ -12682,7 +12682,72 @@ tinymce.create('tinymce.ui.O2k7Toolbar:tinymce.ui.MultiLineContainer', {
 
 			return t.add(c);
 		},
+		
+		//Create the button of the grid table
+		createTableSplitButton : function(id, s, cc) {
+			var t = this, ed = t.editor, cmd, c, cls, bm;
 
+			if (t.get(id))
+				return null;
+
+			s.title = ed.translate(s.title);
+			s.scope = s.scope || ed;
+
+			if (!s.onclick) {
+				s.onclick = function(v) {
+					if (tinymce.isIE)
+						bm = ed.selection.getBookmark(1);
+
+					ed.execCommand(s.cmd, s.ui || false, v || s.value);
+				};
+			}
+
+			if (!s.onselect) {
+				s.onselect = function(v) {
+					ed.execCommand(s.cmd, s.ui || false, v || s.value);
+				};
+			}
+
+			s = extend({
+				title : s.title,
+				'class' : 'mce_' + id,
+				'menu_class' : ed.getParam('skin') + 'Skin',
+				scope : s.scope,
+				advance_table_title : ed.getLang('advance_table') 
+			}, s);
+
+			id = t.prefix + id;
+			cls = cc || t._cls.tablesplitbutton || tinymce.ui.TableSplitButton;
+			c = new cls(id, s);
+			ed.onMouseDown.add(c.hideMenu, c);
+
+			// Remove the menu element when the editor is removed
+			ed.onRemove.add(function() {
+				c.destroy();
+			});
+
+			//Set the editor
+			c.setEditor(ed);
+			
+			// Fix for bug #1897785, #1898007
+			if (tinymce.isIE) {
+				c.onShowMenu.add(function() {
+					// IE 8 needs focus in order to store away a range with the current collapsed caret location
+					ed.focus();
+					bm = ed.selection.getBookmark(1);
+				});
+
+				c.onHideMenu.add(function() {
+					if (bm) {
+						ed.selection.moveToBookmark(bm);
+						bm = 0;
+					}
+				});
+			}
+
+			return t.add(c);
+		},
+		
 		createToolbar : function(id, s, cc) {
 			var c, t = this, cls;
 

@@ -8,6 +8,7 @@
 .defaultSkin iframe {display:block; background:#FFF}
 .defaultSkin .mceToolbar {height:26px}
 .defaultSkin .mceToolbar li {float:left; list-style-type:none}
+.defaultSkin .mceToolbar .groupTitle {text-align:center; color:#5b626c; white-space:nowrap; padding:0px 6px 0px 3px; font-size: 8pt;}
 .defaultSkin .mceLeft {text-align:left}
 .defaultSkin .mceRight {text-align:right}
 
@@ -212,3 +213,59 @@
 .defaultSkin span.mce_pagebreak {background-position:0 -40px}
 .defaultSkin span.mce_restoredraft {background-position:-20px -40px}
 .defaultSkin span.mce_spellchecker {background-position:-540px -20px}
+
+.defaultSkin .ms-cui-it-activeCell,.ms-cui-it-inactiveCell{
+width:12px;
+height:12px;
+}
+
+.defaultSkin .ms-cui-menu {
+border:1px solid #BEC1C4;
+z-index:103;
+}
+.defaultSkin .ms-cui-it-activeCell{
+border:1px solid #000;
+width:12px;
+height:12px;
+}
+.defaultSkin .ms-cui-it-inactiveCell{
+border:1px solid #000;
+width:12px;
+height:12px;
+}
+.defaultSkin .ms-cui-it-activeCellOuter{
+border:1px solid #F00;
+}
+.defaultSkin .ms-cui-it-inactiveCellOuter{
+border:1px solid transparent;
+}
+.defaultSkin .ms-cui-separator
+{
+cursor:default;
+height:16px;
+padding:0px 0px 0px 2px;
+}
+.defaultSkin .ms-cui-menu{
+border:1px solid #bec1c4;
+z-index:103;
+}
+.defaultSkin .ms-cui-menu32{
+max-width:250px;
+}
+.defaultSkin .ms-cui-menusection{
+background-color:#fff;
+border-bottom:1px solid #e2e4e7;
+}
+.defaultSkin .ms-cui-menusection-title{
+padding:4px 2px;
+border-bottom:1px solid #e2e4e7;
+background-color:#f0f2f5;
+color:#4c535c;
+font-weight:bold;
+}
+
+
+* {
+margin:0;
+padding:0;
+}

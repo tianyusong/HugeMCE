@@ -771,7 +771,7 @@
 			each(explode(s['theme_advanced_containers'] || ''), function(c) {
 				to = cf.createO2k7Toolbar("toolbar" + (++i));
 				to.description = s['theme_advanced_container_' + c + '_description'] || ''
-				to.settings.style = 'float: left; border-style:solid; border-right-width:1px;';
+				to.settings.style = 'float: left; border-right:1px solid; border-right-color:#e7e7e8;';
 	
 				var r = 0;
 				each(explode(s['theme_advanced_container_' + c + '_toolbars'] || ''), function(d) {

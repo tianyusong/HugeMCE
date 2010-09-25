@@ -102,8 +102,8 @@
 			var t = this;
 			for(var k=0;k<t.gridTableDom.length;k++) {
 				var cellDom = t.gridTableDom[k];
-				DOM.removeClass(cellDom, 'ms-cui-it-inactiveCell');
-				DOM.addClass(cellDom, 'ms-cui-it-activeCell');
+				DOM.removeClass(cellDom, 'ms-cui-it-activeCell');
+				DOM.addClass(cellDom, 'ms-cui-it-inactiveCell');
 			}
 			
 			for(var k=0;k<t.gridTableOuterDom.length;k++) {
@@ -158,8 +158,8 @@
 										DOM.addClass(currentOuterCell, 'ms-cui-it-activeCellOuter');
 									}
 									else {
-										DOM.removeClass(currentCell, 'ms-cui-it-inactiveCell');
-										DOM.addClass(currentCell, 'ms-cui-it-activeCell');
+										DOM.removeClass(currentCell, 'ms-cui-it-activeCell');
+										DOM.addClass(currentCell, 'ms-cui-it-inactiveCell');
 										DOM.removeClass(currentOuterCell, 'ms-cui-it-activeCellOuter');
 										DOM.addClass(currentOuterCell, 'ms-cui-it-inactiveCellOuter');
 									}

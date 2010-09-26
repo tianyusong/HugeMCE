@@ -13,9 +13,11 @@
  * Defines the special button for the table
  */
 (function(tinymce) {
+	
 	var DOM = tinymce.DOM, Event = tinymce.dom.Event, is = tinymce.is, each = tinymce.each;
 
 	tinymce.create('tinymce.ui.TableSplitButton:tinymce.ui.SplitButton', {
+		
 		TableSplitButton : function(id, s) {
 			var t = this;
 
@@ -26,10 +28,11 @@
 			t.onHideMenu = new tinymce.util.Dispatcher(t);
 
 			t.value = s.default_color;
+			
 		},
 
 		setEditor : function(ed) {
-			this.editor = ed
+			this.editor = ed;
 		},
 		
 		showMenu : function() {
@@ -99,8 +102,8 @@
 			var t = this;
 			for(var k=0;k<t.gridTableDom.length;k++) {
 				var cellDom = t.gridTableDom[k];
-				DOM.removeClass(cellDom, 'ms-cui-it-inactiveCell');
-				DOM.addClass(cellDom, 'ms-cui-it-activeCell');
+				DOM.removeClass(cellDom, 'ms-cui-it-activeCell');
+				DOM.addClass(cellDom, 'ms-cui-it-inactiveCell');
 			}
 			
 			for(var k=0;k<t.gridTableOuterDom.length;k++) {
@@ -116,6 +119,7 @@
 		gridTableOuterDom: null,
 		
 		renderMenu : function() {
+			
 			var t = this, m, i = 0, j = 0, s = t.settings, n, tb, tr, w;
 
 			w = DOM.add(s.menu_container, 'div', {id : t.id + '_menu', 'class' : s['menu_class'] + ' ' + s['class'], style : 'position:absolute;left:0;top:-1000px;'});
@@ -154,8 +158,8 @@
 										DOM.addClass(currentOuterCell, 'ms-cui-it-activeCellOuter');
 									}
 									else {
-										DOM.removeClass(currentCell, 'ms-cui-it-inactiveCell');
-										DOM.addClass(currentCell, 'ms-cui-it-activeCell');
+										DOM.removeClass(currentCell, 'ms-cui-it-activeCell');
+										DOM.addClass(currentCell, 'ms-cui-it-inactiveCell');
 										DOM.removeClass(currentOuterCell, 'ms-cui-it-activeCellOuter');
 										DOM.addClass(currentOuterCell, 'ms-cui-it-inactiveCellOuter');
 									}
@@ -193,7 +197,6 @@
 
 		createTable : function(c) {
 			var t = this;
-
 
 			t.value = c;
 			t.hideMenu();
@@ -1053,7 +1056,8 @@
 				ed.getBody().style.webkitUserSelect = '';
 				ed.dom.removeClass(ed.dom.select('td.mceSelected,th.mceSelected'), 'mceSelected');
 			};
-
+			
+			
 			// Register buttons
 			each([
 				['table', 'table.desc', 'mceInsertTable', true],
@@ -1456,10 +1460,76 @@
 			});
 		},
 		
-		//Create the grid table ui
 		createControl : function(n, cm) {
 			switch(n) {
 				case 'table':
+					var extend = tinymce.extend;
+
+					//Add a new control in the manager
+					cm.createTableSplitButton = function(id, s, cc) {
+						var t = this, ed = t.editor, cmd, c, cls, bm;
+
+						if (t.get(id))
+							return null;
+
+						s.title = ed.translate(s.title);
+						s.scope = s.scope || ed;
+
+						if (!s.onclick) {
+							s.onclick = function(v) {
+								if (tinymce.isIE)
+									bm = ed.selection.getBookmark(1);
+
+								ed.execCommand(s.cmd, s.ui || false, v || s.value);
+							};
+						}
+
+						if (!s.onselect) {
+							s.onselect = function(v) {
+								ed.execCommand(s.cmd, s.ui || false, v || s.value);
+							};
+						}
+
+						s = extend({
+							title : s.title,
+							'class' : 'mce_' + id,
+							'menu_class' : ed.getParam('skin') + 'Skin',
+							scope : s.scope,
+							advance_table_title : ed.getLang('advance_table') 
+						}, s);
+
+						id = t.prefix + id;
+						cls = cc || t._cls.tablesplitbutton || tinymce.ui.TableSplitButton;
+						c = new cls(id, s);
+						ed.onMouseDown.add(c.hideMenu, c);
+
+						// Remove the menu element when the editor is removed
+						ed.onRemove.add(function() {
+							c.destroy();
+						});
+
+						//Set the editor
+						c.setEditor(ed);
+						
+						// Fix for bug #1897785, #1898007
+						if (tinymce.isIE) {
+							c.onShowMenu.add(function() {
+								// IE 8 needs focus in order to store away a range with the current collapsed caret location
+								ed.focus();
+								bm = ed.selection.getBookmark(1);
+							});
+
+							c.onHideMenu.add(function() {
+								if (bm) {
+									ed.selection.moveToBookmark(bm);
+									bm = 0;
+								}
+							});
+						}
+
+						return t.add(c);
+					};
+					
 					var t = this;
 					var c = cm.createTableSplitButton('table', {
 						title : 'table.desc',

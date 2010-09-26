@@ -6246,7 +6246,6 @@ window.tinymce.dom.Sizzle = Sizzle;
 			return null;
 		},
 
-// modify: sunjx
 		serialize : function(n, o) {
 			var h, t = this, doc, oldDoc, impl, selected;
 			t._setup();

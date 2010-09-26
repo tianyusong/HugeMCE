@@ -931,7 +931,8 @@
 			compress("border", "-style", "border-style");
 			compress("padding", "", "padding");
 			compress("margin", "", "margin");
-			compress2('border', 'border-width', 'border-style', 'border-color');
+      // HugeMCE: 删除一个样式合并(此合并会导致样式的逻辑问题).
+			// compress2('border', 'border-width', 'border-style', 'border-color');
 
 			if (isIE) {
 				// Remove pointless border

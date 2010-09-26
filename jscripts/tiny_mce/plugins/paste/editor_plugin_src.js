@@ -77,7 +77,6 @@
 				t.onPreProcess.dispatch(t, o);
 
 				// Create DOM structure
-        // HugeMCE: tinymce创建一个html的元素.
 				o.node = dom.create('div', 0, o.content);
 
 				// Execute post process handlers

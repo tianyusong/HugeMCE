@@ -1,4 +1,4 @@
-﻿/**
+/**
  * editor_plugin_src.js
  *
  * Copyright 2009, Moxiecode Systems AB
@@ -9,7 +9,6 @@
  * 问题：当table,td设置了cursor为default或其他的，则cursor为格式刷将无效，即使设置了!important
  *       
  */
-
 (function() {
 	// Load plugin specific language pack
 	tinymce.PluginManager.requireLangPack('formatbrush');

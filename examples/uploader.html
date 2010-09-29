@@ -4,7 +4,7 @@
 <title>Full featured example</title>
 
 <!-- TinyMCE -->
-<script type="text/javascript" src="../jscripts/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="../jscripts/tiny_mce/tiny_mce_dev.js"></script>
 <script type="text/javascript">
 	tinyMCE.init({
 		// General options
@@ -62,12 +62,12 @@
 
 <form method="post" action="http://tinymce.moxiecode.com/dump.php?example=true">
 	<div>
-		<h3>Full featured example</h3>
+		<h3>Uploader example</h3>
 
-		<p>�ϴ�ͼƬ��ʾ��.֧�ֱ����ϴ�����ר������ͼƬ.</p>
-		<p>��һ��tabΪ�����ϴ�,�ϴ���������ļ���Ϣ,�Զ���ת���ڶ���tab(����û�к�˳���,��ֻ����ȥ�˸��ٵ�ͼƬ)</p>
-		<p>�ڶ���tabΪԤ��ҳ��,���Խ���һЩ���Եĵ���.</p>
-		<p>�ڵڶ���tab���ȷ�Ϻ�,�ܹ����뵽�༭����.</p>
+		<p>上传图片的示例.支持本地上传或者专贴网络图片.</p>
+		<p>第一个tab为本地上传,上传完后会带上文件信息,自动跳转到第二个tab(现在没有后端程序,故只带过去了个假的图片)</p>
+		<p>第二个tab为预览页面,可以进行一些属性的调整.</p>
+		<p>在第二个tab点击确认后,能够插入到编辑器中.</p>
 
 		<!-- Gets replaced with TinyMCE, remember HTML in a textarea should be encoded -->
 		<div>

@@ -467,6 +467,28 @@
 		},
 
 		/**
+		 * Creates a toolbar container control instance by id.
+		 *
+		 * @method createToolbar
+		 * @param {String} id Unique id for the new toolbar container control instance. For example "toolbar1".
+		 * @param {Object} s Optional settings object for the control.
+		 * @param {Object} cc Optional control class to use instead of the default one.
+		 * @return {tinymce.ui.Control} Control instance that got created and added.
+		 */
+		createO2k7Toolbar : function(id, s, cc) {
+			var c, t = this, cls;
+
+			id = t.prefix + id;
+			cls = cc || t._cls.toolbar || tinymce.ui.O2k7Toolbar;
+			c = new cls(id, s);
+
+			if (t.get(id))
+				return null;
+
+			return t.add(c);
+		},
+
+		/**
 		 * Creates a separator control instance.
 		 *
 		 * @method createSeparator

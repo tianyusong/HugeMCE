@@ -89,6 +89,7 @@
 	include('dom/RangeUtils.js');
 	include('ui/Control.js');
 	include('ui/Container.js');
+	include('ui/MultiLineContainer.js');
 	include('ui/Separator.js');
 	include('ui/MenuItem.js');
 	include('ui/Menu.js');
@@ -100,6 +101,7 @@
 	include('ui/SplitButton.js');
 	include('ui/ColorSplitButton.js');
 	include('ui/Toolbar.js');
+	include('ui/O2k7Toolbar.js');
 	include('AddOnManager.js');
 	include('EditorManager.js');
 	include('Editor.js');

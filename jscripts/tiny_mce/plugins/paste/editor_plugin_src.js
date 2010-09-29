@@ -77,7 +77,6 @@
 				t.onPreProcess.dispatch(t, o);
 
 				// Create DOM structure
-        // HugeMCE: tinymce创建一个html的元素.
 				o.node = dom.create('div', 0, o.content);
 
 				// Execute post process handlers
@@ -364,7 +363,7 @@
 				} while (len != h.length);
 
 				// Remove all spans if no styles is to be retained
-        // 是否过滤span标签.
+        // HugeMCE是否过滤span标签.
 				if (getParam(ed, "paste_retain_style_properties").replace(/^none$/i, "").length == 0) {
 					h = h.replace(/<\/?span[^>]*>/gi, "");
 				} else {

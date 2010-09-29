@@ -271,7 +271,9 @@
 							},
 
 							removeItem : function(key) {
-								ed.getElement().removeAttribute(key);
+								var userDataElement = ed.getElement();
+								userDataElement.removeAttribute(key);
+								userDataElement.save("TinyMCE");
 							}
 						};
 					}

@@ -231,7 +231,7 @@
 			return ' ' + attrib + '="' + value + '"';
 		},
 		
-		insertTableFromGrid : function(cols, rows) {
+		insertTableFromGrid : function(rows, cols) {
 			var t = this;
 			var inst = this.editor, dom = inst.dom;
 			var border = "1", cellpadding = "", cellspacing = "", align, width = "400", height = "6", className, caption, frame, rules;

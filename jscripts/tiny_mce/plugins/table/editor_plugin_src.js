@@ -1533,7 +1533,7 @@
 					var t = this;
 					var c = cm.createTableSplitButton('table', {
 						title : 'table.desc',
-						cmd : 'mceInsertTable',
+						cmd : 'mceInsertTable'
 					});
 				return c;
 

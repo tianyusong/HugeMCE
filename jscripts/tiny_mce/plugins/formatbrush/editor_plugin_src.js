@@ -94,7 +94,7 @@
 				var ct = node.style.cssText || "";
 				var cts = ct.split(":") || [];
 				if (cts.length > 0) {
-					if (cssText.indexOf(cts[0] + ":") < 0) {
+					if ((":"+cssText).indexOf(":"+cts[0] + ":") < 0) {
 						cssText += ct;
 					}
 				} else cssText += ct;

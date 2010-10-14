@@ -213,6 +213,7 @@
 .defaultSkin span.mce_pagebreak {background-position:0 -40px}
 .defaultSkin span.mce_restoredraft {background-position:-20px -40px}
 .defaultSkin span.mce_spellchecker {background-position:-540px -20px}
+.defaultSkin span.mce_more {background-position:-40px -40px}
 
 .defaultSkin .ms-cui-it-activeCell,.ms-cui-it-inactiveCell{overflow:hidden;width:12px;height:12px;}
 .defaultSkin .ms-cui-it-activeCell{border:1px solid #ffe294;width:12px;height:12px;}

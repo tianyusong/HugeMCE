@@ -17,6 +17,7 @@
 		cssText:"",
 		tagnames: {},
 		root:null,
+		ignoreTags:["div","p","table","tr","td","th","tbody"],
 		/**
 		 * Initializes the plugin, this will be executed after the plugin has been created.
 		 * This call is done before the editor instance has finished it's initialization so use the onInit event
@@ -38,21 +39,27 @@
 					t.cssText = t._mergeStyle(ele, t.cssText);
 					t.tagnames = t._mergeTagname(ele, t.tagnames);
 				}
-				root = ele;
-				root.style.cursor='url('+url+'/img/formatbrush.cur'+'),auto';
+				t.root = ele;
+				t.root.style.cursor='url('+url+'/img/formatbrush.cur'+'),auto';
 			});
-			
 			// 鼠标up的时候，使用格式刷的样式进行格式化被选择的内容
 			ed.onMouseUp.add(function(ed, e) {
 				try {
-					if (!root) return false;
+					if (!t.root) return;
 					var html = ed.selection.getContent();
 					if(html && t.tagnames.length > 0) {
 						var changed = false;
 						for(var i = 0; i < t.tagnames.length; i++) {
 							var tagname = t.tagnames[i];
+							var ignored = false;
 							// 忽略一些块状元素，否则格式化后的区域会换行之类的
-							if (tagname == "div" || tagname == "p" || tagname == "table") continue; 
+							for(var j = 0; j < t.ignoreTags.length; j++) {
+								if (tagname.toLowerCase() == t.ignoreTags[j]) {
+									ignored = true;
+									break;
+								}
+							}
+							if (ignored) continue;
 							html = "<"+tagname+(i==0?(" style='"+t.cssText+"'"):"")+">" + html + "</"+tagname+">";
 							changed = true;
 						}
@@ -64,8 +71,8 @@
 					ed.selection.setContent(html);
 					t.tagnames = [];
 					t.cssText = "";
-					root.style.cursor = "auto";	
-					root = null;
+					t.root.style.cursor = "auto";	
+					t.root = null;
 				} catch (e) {
 				}
 			});
@@ -74,8 +81,8 @@
 			ed.onKeyUp.add(function(ed, e) {
 				try {
 					if (e.keyCode == 27) {
-						root.style.cursor = "auto";
-						root = null
+						t.root.style.cursor = "auto";
+						t.root = null
 					}
 				} catch (e) {
 				}

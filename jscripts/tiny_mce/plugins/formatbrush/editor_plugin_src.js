@@ -36,7 +36,7 @@
 
 			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceformatbrush');
 			ed.addCommand('mceformatbrush', function() {
-				// 获取当前选中的所有html标签，目的是为了提取当前选中对象的外围样式，如：strong, li等，so需要遍历父结点并保留下来
+				// get selected html element, e.g:strong, li
 				var ele = ed.selection.getStart();
 				t.cssText = t._mergeStyle(ele, "");
 				t.tagnames = t._mergeTagname(ele, []);
@@ -48,7 +48,7 @@
 				//t.root.style.cursor='url('+url+'/img/formatbrush.cur'+'),auto';
 				ed.dom.addClass(t.root, "formatbrushing");
 			});
-			// 鼠标up的时候，使用格式刷的样式进行格式化被选择的内容
+			// mouse up, format the content
 			ed.onMouseUp.add(function(ed, e) {
 				try {
 					if (!t.root) return;
@@ -58,7 +58,7 @@
 						for(var i = 0; i < t.tagnames.length; i++) {
 							var tagname = t.tagnames[i];
 							var ignored = false;
-							// 忽略一些块状元素，否则格式化后的区域会换行之类的
+							// ignore some block element, or formated area will be changed
 							for(var j = 0; j < t.ignoreTags.length; j++) {
 								if (tagname.toLowerCase() == t.ignoreTags[j]) {
 									ignored = true;
@@ -69,7 +69,7 @@
 							html = "<"+tagname+(i==0?(" style='"+t.cssText+"'"):"")+">" + html + "</"+tagname+">";
 							changed = true;
 						}
-						// 如果没有改变，则原来有css变化，则创建一个默认的span元素，加上css,使其使用上格式
+						// if no tag will be added, add default span element and attach style css to it
 						if (!changed && t.cssText) {
 							html = "<span style='" + t.cssText + "'>" + html + "</span>";
 						}
@@ -83,7 +83,7 @@
 				}
 			});
 
-			// 键盘事件，主要处理按下Esc键取消格式
+			// process Esc key
 			ed.onKeyUp.add(function(ed, e) {
 				try {
 					if (e.keyCode == 27) {
@@ -101,7 +101,7 @@
 				image : url + '/img/formatbrush.png'
 			});
 		},
-		// 提取结点的cssText
+		// merge css text
 		_mergeStyle: function(node, cssText) {
 			if (node) {
 				var ct = node.style.cssText || "";
@@ -114,7 +114,7 @@
 			}
 			return cssText;
 		},
-		// 提取节点tagname
+		// merge tagname
 		_mergeTagname: function(node, tagnames) {
 			if (node) {
 				var tagname = node.tagName.toLowerCase();

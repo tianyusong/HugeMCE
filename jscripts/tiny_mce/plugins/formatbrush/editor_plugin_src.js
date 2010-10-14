@@ -33,7 +33,6 @@
 				if (ed.settings.content_css !== false)
 					ed.dom.loadCSS(url + "/css/content.css");
 			});
-
 			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceformatbrush');
 			ed.addCommand('mceformatbrush', function() {
 				// get selected html element, e.g:strong, li
@@ -45,8 +44,8 @@
 					t.tagnames = t._mergeTagname(ele, t.tagnames);
 				}
 				t.root = ele;
-				//t.root.style.cursor='url('+url+'/img/formatbrush.cur'+'),auto';
-				ed.dom.addClass(t.root, "formatbrushing");
+				if (tinymce.isIE || tinymce.isIE6) t.root.style.cursor='url('+url+'/img/formatbrush.cur'+'),auto';
+				else ed.dom.addClass(t.root, "formatbrushing");
 			});
 			// mouse up, format the content
 			ed.onMouseUp.add(function(ed, e) {
@@ -77,7 +76,8 @@
 					ed.selection.setContent(html);
 					t.tagnames = [];
 					t.cssText = "";
-					ed.dom.removeClass(t.root, "formatbrushing");
+					if (tinymce.isIE || tinymce.isIE6) t.root.style.cursor="auto";
+					else ed.dom.removeClass(t.root, "formatbrushing");
 					t.root = null;
 				} catch (e) {
 				}
@@ -87,7 +87,8 @@
 			ed.onKeyUp.add(function(ed, e) {
 				try {
 					if (e.keyCode == 27) {
-						ed.dom.removeClass(t.root, "formatbrushing");						
+						if (tinymce.isIE || tinymce.isIE6) t.root.style.cursor="auto"; 
+						else ed.dom.removeClass(t.root, "formatbrushing");						
 						t.root = null
 					}
 				} catch (e) {

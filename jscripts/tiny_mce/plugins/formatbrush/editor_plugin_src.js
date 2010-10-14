@@ -6,7 +6,6 @@
  *
  * License: http://tinymce.moxiecode.com/license
  * Contributing: http://tinymce.moxiecode.com/contributing
- * 问题：当table,td设置了cursor为default或其他的，则cursor为格式刷将无效，即使设置了!important
  *       
  */
 (function() {
@@ -29,6 +28,12 @@
 		init : function(ed, url) {
 			var t = this;
 
+			// load content css
+			ed.onInit.add(function() {
+				if (ed.settings.content_css !== false)
+					ed.dom.loadCSS(url + "/css/content.css");
+			});
+
 			// Register the command so that it can be invoked by using tinyMCE.activeEditor.execCommand('mceformatbrush');
 			ed.addCommand('mceformatbrush', function() {
 				// 获取当前选中的所有html标签，目的是为了提取当前选中对象的外围样式，如：strong, li等，so需要遍历父结点并保留下来
@@ -40,7 +45,8 @@
 					t.tagnames = t._mergeTagname(ele, t.tagnames);
 				}
 				t.root = ele;
-				t.root.style.cursor='url('+url+'/img/formatbrush.cur'+'),auto';
+				//t.root.style.cursor='url('+url+'/img/formatbrush.cur'+'),auto';
+				ed.dom.addClass(t.root, "formatbrushing");
 			});
 			// 鼠标up的时候，使用格式刷的样式进行格式化被选择的内容
 			ed.onMouseUp.add(function(ed, e) {
@@ -71,7 +77,7 @@
 					ed.selection.setContent(html);
 					t.tagnames = [];
 					t.cssText = "";
-					t.root.style.cursor = "auto";	
+					ed.dom.removeClass(t.root, "formatbrushing");
 					t.root = null;
 				} catch (e) {
 				}
@@ -81,7 +87,7 @@
 			ed.onKeyUp.add(function(ed, e) {
 				try {
 					if (e.keyCode == 27) {
-						t.root.style.cursor = "auto";
+						ed.dom.removeClass(t.root, "formatbrushing");						
 						t.root = null
 					}
 				} catch (e) {

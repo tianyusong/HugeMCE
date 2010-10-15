@@ -72,8 +72,8 @@
 						if (!changed && t.cssText) {
 							html = "<span style='" + t.cssText + "'>" + html + "</span>";
 						}
+						ed.selection.setContent(html);
 					}
-					ed.selection.setContent(html);
 					t.tagnames = [];
 					t.cssText = "";
 					if (tinymce.isIE || tinymce.isIE6) t.root.style.cursor="auto";

@@ -79,6 +79,8 @@
 			<fileset dir="${classes_dir}" includes="dom/RangeUtils.js" />
 			<fileset dir="${classes_dir}" includes="ui/Control.js" />
 			<fileset dir="${classes_dir}" includes="ui/Container.js" />
+			<fileset dir="${classes_dir}" includes="ui/MultiLineContainer.js" />
+			<fileset dir="${classes_dir}" includes="ui/O2k7Toolbar.js" />
 			<fileset dir="${classes_dir}" includes="ui/Separator.js" />
 			<fileset dir="${classes_dir}" includes="ui/MenuItem.js" />
 			<fileset dir="${classes_dir}" includes="ui/Menu.js" />
@@ -168,6 +170,7 @@
 		<yuicompress infile="${build_dir}/plugins/autoresize/editor_plugin_src.js" outfile="${build_dir}/plugins/autoresize/editor_plugin.js" />
 		<yuicompress infile="${build_dir}/plugins/wordcount/editor_plugin_src.js" outfile="${build_dir}/plugins/wordcount/editor_plugin.js" />
 		<yuicompress infile="${build_dir}/plugins/legacyoutput/editor_plugin_src.js" outfile="${build_dir}/plugins/legacyoutput/editor_plugin.js" />
+		<yuicompress infile="${build_dir}/plugins/formatbrush/editor_plugin_src.js" outfile="${build_dir}/plugins/formatbrush/editor_plugin.js" />
 
 		<!-- Compress jQuery plugin -->
 		<yuicompress infile="${classes_dir}/adapter/jquery/jquery.tinymce.js" outfile="${build_dir}/jquery.tinymce.js" />

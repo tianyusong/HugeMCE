@@ -48,8 +48,10 @@
 	var PLUGIN_NAME = 'autosave',
 		RESTORE_DRAFT = 'restoredraft',
 		TRUE = true,
+		FALSE = false,
 		undefined,
 		unloadHandlerAdded,
+		disabled = FALSE,
 		Dispatcher = tinymce.util.Dispatcher;
 
 	/**
@@ -269,11 +271,13 @@
 							},
 
 							removeItem : function(key) {
-								ed.getElement().removeAttribute(key);
+								var userDataElement = ed.getElement();
+								userDataElement.removeAttribute(key);
+								userDataElement.save("TinyMCE");
 							}
 						};
 					}
-				},
+				}
 			], function(setup) {
 				// Try executing each function to find a suitable storage engine
 				try {
@@ -294,6 +298,11 @@
 		 */
 		storeDraft : function() {
 			var self = this, storage = self.storage, editor = self.editor, expires, content;
+			
+			// Is store draft disabled
+			if (disabled) {
+				return;
+			}
 
 			// Is the contents dirty
 			if (storage) {
@@ -392,6 +401,24 @@
 					});
 				}
 			}
+		},
+		
+		/**
+		 * Disable auto save action.
+		 * 
+		 * @method disable
+		 */
+		disable : function() {
+			disabled = TRUE;
+		},
+		
+		/**
+		 * Enable auto save action.
+		 * 
+		 * @method enable
+		 */
+		enable : function() {
+			disabled = FALSE;
 		},
 
 		"static" : {

@@ -7,6 +7,8 @@
 .o2k7Skin table {background:#E5EFFD}
 .o2k7Skin iframe {display:block; background:#FFF}
 .o2k7Skin .mceToolbar {height:26px}
+.o2k7Skin .mceToolbar li {float:left; list-style-type:none}
+.o2k7Skin .mceToolbar .groupTitle {text-align:center; color:#5b626c; white-space:nowrap; padding:0px 6px 0px 3px; font-size: 8pt;}
 
 /* External */
 .o2k7Skin .mceExternalToolbar {position:absolute; border:1px solid #ABC6DD; border-bottom:0; display:none}
@@ -213,3 +215,4 @@
 .o2k7Skin span.mce_pagebreak {background-position:0 -40px}
 .o2k7Skin span.mce_restoredraft {background-position:-20px -40px}
 .o2k7Skin span.mce_spellchecker {background-position:-540px -20px}
+.o2k7Skin span.mce_more {background-position:-40px -40px}

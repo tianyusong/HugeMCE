@@ -8,6 +8,346 @@
  * Contributing: http://tinymce.moxiecode.com/contributing
  */
 
+
+/**
+ * Defines the special button for the table
+ */
+(function(tinymce) {
+	
+	var DOM = tinymce.DOM, Event = tinymce.dom.Event, is = tinymce.is, each = tinymce.each;
+
+	tinymce.create('tinymce.ui.TableSplitButton:tinymce.ui.SplitButton', {
+		
+		TableSplitButton : function(id, s) {
+			var t = this;
+
+			t.parent(id, s);
+
+			t.onShowMenu = new tinymce.util.Dispatcher(t);
+
+			t.onHideMenu = new tinymce.util.Dispatcher(t);
+
+			t.value = s.default_color;
+			
+		},
+
+		setEditor : function(ed) {
+			this.editor = ed;
+		},
+		
+		showMenu : function() {
+			var t = this, r, p, e, p2;
+
+			if (t.isDisabled())
+				return;
+
+			if (!t.isMenuRendered) {
+				t.renderMenu();
+				t.isMenuRendered = true;
+			}
+
+			if (t.isMenuVisible)
+				return t.hideMenu();
+
+			e = DOM.get(t.id);
+			DOM.show(t.id + '_menu');
+			DOM.addClass(e, 'mceSplitButtonSelected');
+			p2 = DOM.getPos(e);
+			DOM.setStyles(t.id + '_menu', {
+				left : p2.x,
+				top : p2.y + e.clientHeight,
+				zIndex : 200000
+			});
+			e = 0;
+
+			Event.add(DOM.doc, 'mousedown', t.hideMenu, t);
+			t.onShowMenu.dispatch(t);
+
+			if (t._focused) {
+				t._keyHandler = Event.add(t.id + '_menu', 'keydown', function(e) {
+					if (e.keyCode == 27)
+						t.hideMenu();
+				});
+
+				DOM.select('a', t.id + '_menu')[0].focus(); // Select first link
+			}
+
+			t.isMenuVisible = 1;
+			
+			t.resetCell();
+		},
+
+		hideMenu : function(e) {
+			var t = this;
+
+			// Prevent double toogles by canceling the mouse click event to the button
+			if (e && e.type == "mousedown" && DOM.getParent(e.target, function(e) {return e.id === t.id + '_open';}))
+				return;
+
+			if (!e || !DOM.getParent(e.target, '.mceSplitButtonMenu')) {
+				DOM.removeClass(t.id, 'mceSplitButtonSelected');
+				Event.remove(DOM.doc, 'mousedown', t.hideMenu, t);
+				Event.remove(t.id + '_menu', 'keydown', t._keyHandler);
+				DOM.hide(t.id + '_menu');
+			}
+
+			t.onHideMenu.dispatch(t);
+
+			t.isMenuVisible = 0;
+			
+			
+		},
+
+		resetCell : function() {
+			var t = this;
+			for(var k=0;k<t.gridTableDom.length;k++) {
+				var cellDom = t.gridTableDom[k];
+				DOM.removeClass(cellDom, 'ms-cui-it-activeCell');
+				DOM.addClass(cellDom, 'ms-cui-it-inactiveCell');
+			}
+			
+			for(var k=0;k<t.gridTableOuterDom.length;k++) {
+				var cellOuterDom = t.gridTableOuterDom[k];
+				DOM.removeClass(cellOuterDom, 'ms-cui-it-activeCellOuter');
+				DOM.addClass(cellOuterDom, 'ms-cui-it-inactiveCellOuter');
+			}
+			
+		},
+		
+		gridTableDom: null,
+		
+		gridTableOuterDom: null,
+		
+		renderMenu : function() {
+			
+			var t = this, m, i = 0, j = 0, s = t.settings, n, tb, tr, w;
+
+			w = DOM.add(s.menu_container, 'div', {id : t.id + '_menu', 'class' : s['menu_class'] + ' ' + s['class'], style : 'position:absolute;left:0;top:-1000px;'});
+			m = DOM.add(w, 'div', {'class' : s['class'] + ' mceSplitButtonMenu'});
+			DOM.add(m, 'span', {'class' : 'mceMenuLine'});
+
+			n = DOM.add(m, 'div', {'class' : 'mceTableSplitMenu'});
+			var innerDiv = DOM.add(m, 'div', {'unselectable' : 'on', 'class' : 'ms-cui-menu'});
+			var gridTable = DOM.add(innerDiv, 'table', {'cellspacing': '0', 'cellpadding' : '0', 'unselectable' : '0', 'id' : id="insertTable-Menu"});
+			var gridTBody = DOM.add(gridTable, 'tbody', {});//<tbody unselectable="on" class="ms-cui-it" cellspacing="0" cellpadding="0">
+			
+			// Generate color grid
+			t.gridTableDom = [];
+			t.gridTableOuterDom = [];
+			
+			i = 0;
+			j = 0;
+			for( i = 0; i < 10; i++) {
+				var currentTr = DOM.add(gridTBody, 'tr', {'unselectable' : 'on'});//    <tr unselectable="on">
+				for( j = 0; j < 10; j++) {
+					var currentTd = DOM.add(currentTr, 'td', {'unselectable' : 'on', 'style' : 'padding: 0px'});
+					var tdDiv = DOM.add(currentTd, 'div', {'unselectable' : 'on', 'class' : 'ms-cui-it-inactiveCellOuter'});
+					var cellDiv = DOM.add(tdDiv, 'div', {'unselectable' : 'on', 'class' : 'ms-cui-it-inactiveCell'});
+					t.gridTableDom.push(cellDiv);
+					t.gridTableOuterDom.push(tdDiv);
+					tinymce.dom.Event.add(cellDiv, "mouseover", (function(i, j) { 
+						return (function(e) {
+							for(var ii=0;ii<10;ii++) {
+								for(var jj=0;jj<10;jj++) {
+									var currentCell = t.gridTableDom[ii*10 + jj];
+									var currentOuterCell = t.gridTableOuterDom[ii*10 + jj];
+									if(ii <= i && jj <= j) {
+										DOM.removeClass(currentCell, 'ms-cui-it-inactiveCell');
+										DOM.addClass(currentCell, 'ms-cui-it-activeCell');
+										DOM.removeClass(currentOuterCell, 'ms-cui-it-inactiveCellOuter');
+										DOM.addClass(currentOuterCell, 'ms-cui-it-activeCellOuter');
+									}
+									else {
+										DOM.removeClass(currentCell, 'ms-cui-it-activeCell');
+										DOM.addClass(currentCell, 'ms-cui-it-inactiveCell');
+										DOM.removeClass(currentOuterCell, 'ms-cui-it-activeCellOuter');
+										DOM.addClass(currentOuterCell, 'ms-cui-it-inactiveCellOuter');
+									}
+								}
+							}
+						});
+					}(i, j)));
+					
+					tinymce.dom.Event.add(tdDiv, "click", (function(i, j) { 
+						return (function(e) {
+							t.insertTableFromGrid(i + 1, j + 1);
+							t.hideMenu();
+						});
+					}(i, j)));
+					
+					var aPart = DOM.add(cellDiv, 'div', {'unselectable' : 'on'}, '&nbsp;');
+				}
+			}
+
+			DOM.addClass(m, 'mceTableSplitMenu');
+
+			Event.add(t.id + '_menu', 'click', function(e) {
+				var c;
+
+				e = e.target;
+
+				if (e.nodeName == 'A' && (c = e.getAttribute('_mce_color')))
+					t.setColor(c);
+
+				return Event.cancel(e); // Prevent IE auto save warning
+			});
+
+			return w;
+		},
+
+		createTable : function(c) {
+			var t = this;
+
+			t.value = c;
+			t.hideMenu();
+			t.settings.onselect(c);
+		},
+
+		postRender : function() {
+			var t = this, id = t.id;
+
+			t.parent();
+		},
+
+		destroy : function() {
+			this.parent();
+
+			Event.clear(this.id + '_menu');
+			Event.clear(this.id + '_advance');
+			DOM.remove(this.id + '_menu');
+		},
+		
+		makeAttrib : function(attrib, value) {
+
+			if (typeof(value) == "undefined" || value == null || value == "") {
+				value = "";
+			}
+			// XML encode it
+			value = value.replace(/&/g, '&amp;');
+			value = value.replace(/\"/g, '&quot;');
+			value = value.replace(/</g, '&lt;');
+			value = value.replace(/>/g, '&gt;');
+
+			return ' ' + attrib + '="' + value + '"';
+		},
+		
+		insertTableFromGrid : function(rows, cols) {
+			var t = this;
+			var inst = this.editor, dom = inst.dom;
+			var border = "1", cellpadding = "", cellspacing = "", align, width = "400", height = "6", className, caption, frame, rules;
+			var html = '', capEl, elm;
+			var cellLimit, rowLimit, colLimit;
+			var style = "", summary = "", dir = "", lang = "";
+
+			elm = dom.getParent(inst.selection.getNode(), 'table');
+
+
+			// Validate table size
+			if (colLimit && cols > colLimit) {
+				tinyMCEPopup.alert(inst.getLang('table_dlg.col_limit').replace(/\{\$cols\}/g, colLimit));
+				return false;
+			} else if (rowLimit && rows > rowLimit) {
+				tinyMCEPopup.alert(inst.getLang('table_dlg.row_limit').replace(/\{\$rows\}/g, rowLimit));
+				return false;
+			} else if (cellLimit && cols * rows > cellLimit) {
+				tinyMCEPopup.alert(inst.getLang('table_dlg.cell_limit').replace(/\{\$cells\}/g, cellLimit));
+				return false;
+			}
+
+
+			// Create new table
+			html += '<table';
+
+			html += t.makeAttrib('id', id);
+			html += t.makeAttrib('border', border);
+			html += t.makeAttrib('cellpadding', cellpadding);
+			html += t.makeAttrib('cellspacing', cellspacing);
+			html += t.makeAttrib('_mce_new', '1');
+
+			if (width && inst.settings.inline_styles) {
+				if (style)
+					style += '; ';
+
+				// Force px
+				if (/^[0-9\.]+$/.test(width))
+					width += 'px';
+
+				style += 'width: ' + width;
+			} else
+				html += makeAttrib('width', width);
+
+			html += t.makeAttrib('align', align);
+			html += t.makeAttrib('frame', frame);
+			html += t.makeAttrib('rules', rules);
+			html += t.makeAttrib('class', className);
+			html += t.makeAttrib('style', style);
+			html += t.makeAttrib('summary', summary);
+			html += t.makeAttrib('dir', dir);
+			html += t.makeAttrib('lang', lang);
+			html += '>';
+
+			if (caption) {
+				if (!tinymce.isIE)
+					html += '<caption><br _mce_bogus="1"/></caption>';
+				else
+					html += '<caption></caption>';
+			}
+
+			for (var y=0; y<rows; y++) {
+				html += "<tr>";
+
+				for (var x=0; x<cols; x++) {
+					if (!tinymce.isIE)
+						html += '<td><br _mce_bogus="1"/></td>';
+					else
+						html += '<td></td>';
+				}
+
+				html += "</tr>";
+			}
+
+			html += "</table>";
+
+			inst.execCommand('mceBeginUndoLevel');
+
+			// Move table
+			if (inst.settings.fix_table_elements) {
+				var patt = '';
+
+				inst.focus();
+				inst.selection.setContent('<br class="_mce_marker" />');
+
+				tinymce.each('h1,h2,h3,h4,h5,h6,p'.split(','), function(n) {
+					if (patt)
+						patt += ',';
+
+					patt += n + ' ._mce_marker';
+				});
+
+				tinymce.each(inst.dom.select(patt), function(n) {
+					inst.dom.split(inst.dom.getParent(n, 'h1,h2,h3,h4,h5,h6,p'), n);
+				});
+
+				dom.setOuterHTML(dom.select('br._mce_marker')[0], html);
+			} else
+				inst.execCommand('mceInsertContent', false, html);
+
+			tinymce.each(dom.select('table[_mce_new]'), function(node) {
+				var td = dom.select('td', node);
+
+				inst.selection.select(td[0], true);
+				inst.selection.collapse();
+
+				dom.setAttrib(node, '_mce_new', '');
+			});
+
+			inst.addVisual();
+			inst.execCommand('mceEndUndoLevel');
+
+		}
+	});
+})(tinymce);
+
 (function(tinymce) {
 	var each = tinymce.each;
 
@@ -716,7 +1056,8 @@
 				ed.getBody().style.webkitUserSelect = '';
 				ed.dom.removeClass(ed.dom.select('td.mceSelected,th.mceSelected'), 'mceSelected');
 			};
-
+			
+			
 			// Register buttons
 			each([
 				['table', 'table.desc', 'mceInsertTable', true],
@@ -1117,8 +1458,90 @@
 					func(val);
 				});
 			});
+		},
+		
+		createControl : function(n, cm) {
+			switch(n) {
+				case 'table':
+					var extend = tinymce.extend;
+
+					//Add a new control in the manager
+					cm.createTableSplitButton = function(id, s, cc) {
+						var t = this, ed = t.editor, cmd, c, cls, bm;
+
+						if (t.get(id))
+							return null;
+
+						s.title = ed.translate(s.title);
+						s.scope = s.scope || ed;
+
+						if (!s.onclick) {
+							s.onclick = function(v) {
+								if (tinymce.isIE)
+									bm = ed.selection.getBookmark(1);
+
+								ed.execCommand(s.cmd, s.ui || false, v || s.value);
+							};
+						}
+
+						if (!s.onselect) {
+							s.onselect = function(v) {
+								ed.execCommand(s.cmd, s.ui || false, v || s.value);
+							};
+						}
+
+						s = extend({
+							title : s.title,
+							'class' : 'mce_' + id,
+							'menu_class' : ed.getParam('skin') + 'Skin',
+							scope : s.scope,
+							advance_table_title : ed.getLang('advance_table') 
+						}, s);
+
+						id = t.prefix + id;
+						cls = cc || t._cls.tablesplitbutton || tinymce.ui.TableSplitButton;
+						c = new cls(id, s);
+						ed.onMouseDown.add(c.hideMenu, c);
+
+						// Remove the menu element when the editor is removed
+						ed.onRemove.add(function() {
+							c.destroy();
+						});
+
+						//Set the editor
+						c.setEditor(ed);
+						
+						// Fix for bug #1897785, #1898007
+						if (tinymce.isIE) {
+							c.onShowMenu.add(function() {
+								// IE 8 needs focus in order to store away a range with the current collapsed caret location
+								ed.focus();
+								bm = ed.selection.getBookmark(1);
+							});
+
+							c.onHideMenu.add(function() {
+								if (bm) {
+									ed.selection.moveToBookmark(bm);
+									bm = 0;
+								}
+							});
+						}
+
+						return t.add(c);
+					};
+					
+					var t = this;
+					var c = cm.createTableSplitButton('table', {
+						title : 'table.desc',
+						cmd : 'mceInsertTable'
+					});
+				return c;
+
+			}
+			return null;
 		}
 	});
+	
 
 	// Register plugin
 	tinymce.PluginManager.add('table', tinymce.plugins.TablePlugin);
